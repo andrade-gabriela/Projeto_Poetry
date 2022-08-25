@@ -1,36 +1,59 @@
 import random
+import sys
+
+
+vidas = 5
+Gameover = ""
+
+
 def main(palavra):
-    compara = embaralha(palavra)
 
-    print("Você tem 5 tentativas para adivinhar qual é a palavra a seguir: "+compara)
-    tentativa = ""
-    for i in range(5):
-        if tentativa != palavra:
-            if i < 4:
-                tentativa = input("Tentativa "+ f"{i+1}" +": ")
-                print("Você ainda tem "+ f"{4-i}" +" tentativas! " + motivacional())
-            else:
-                tentativa = input("Tentativa "+ f"{i+1}" +": ")
-                print("Você ainda tem "+ f"{4-i}" +" tentativa! " + motivacional())
-        else:
-            print("Parabéns! Você acertou.")
+    global Gameover
+    print("\nVocê tem 5 tentativas para adivinhar qual é a palavra a seguir: ")
+    print(embaralha(palavra))
 
-    print("Você falhou! A palavra era: " + palavra)
+    if Gameover == "Ganhou":
+        sys.exit()
+    elif Gameover == "Perdeu":
+        sys.exit()
+    else:
+        while vidas > 0 and Gameover != "Perdeu" and Gameover != "Ganhou":
+            acertarPalavra(palavra)
 
-def embaralha(p):
+
+def acertarPalavra(palavra):
+
+    tentativa = input("Palpite: ")
+
+    if tentativa != palavra:
+        global vidas
+        vidas -= 1
+        if vidas != 0:
+            motivacional()
+    elif tentativa == palavra:
+        print("Parabéns! Você acertou.")
+        global Gameover
+        Gameover = "Ganhou"
+        return
+
+    if vidas == 0:
+        Gameover = "Perdeu"
+        print("\nVocê falhou! A palavra era: " + palavra)
+
+
+def embaralha(palavraEmbaralhar):
     mistura = []
-    for letra in p:
+    for letra in palavraEmbaralhar:
         mistura.append(letra)
-    mistura.sort()
+    random.shuffle(mistura)
     final = "".join(mistura)
     return final
 
+
 def motivacional():
-    frases = ["Você consegue!",
-            "Não desista!",
-            "Acredito em você!",
-            "Falta pouco!"]
-    return frases[random.randint(0,3)]
+    frases = ["Você consegue!", "Não desista!", "Acredito em você!", "Falta pouco!"]
+    motiv = frases[random.randint(0, 3)]
+    print("\nVocê ainda tem " + f"{vidas}" + " tentativa(s)! " + motiv)
 
 
 main("papagaio")
